@@ -1,5 +1,6 @@
 <template>
 <main>
+
   <h1>Heyyyyyy {{ name }}</h1>
   <h1>Heyyyyyy {{ name.toUpperCase() }}</h1>
 <!--Permite usar expresiones de JavaScript-->
@@ -32,20 +33,22 @@
 <button @click="clickar2('Soy peruano pero acortando el procesos sustituyendo v-on por @')">Peruanizame</button>
 <button @click.right.prevent="clickar2('Soy peruano pero acortando el procesos sustituyendo v-on por @ y ademas soy diestro')">Peruanizame con click derecho</button>
 <hr>
-<h2 v-if="counter >0" style="color: green;">{{ counter }}</h2>
-<h2 v-else-if="counter <0" style="color: red;">{{ counter }}</h2>
-<h2 v-else-if="counter === 0" style="color: pink;">{{ counter }}</h2>
+  
+<h2 :class="classCounter">{{ counter }}</h2>
 <button @click="incremento">Subele</button>
 <button @click="decremento">Bajale</button>
 <button @click="reinicio">Reiniciemos</button>
+<button @click="turboflipa" :disabled="turboflipable">Me turboflipa este numero {{ turboflipable }}</button>
 
-
+<ul>
+  <li v-for="numero in numerosTurboflipantes" :key="numero">{{ numero }}</li>
+</ul>
 
 </main>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref,computed } from 'vue';
 const name = 'Vue dinámico'
 const styleColor = "color: pink"
 const arrayColores = ["blue","pink","peruano"]
@@ -72,35 +75,48 @@ const arrayFrutas = [
 
 ]
 
- //Metodo
- const clickar =() => {
+let numerosTurboflipantes = ref([]);
+  const incremento = () => counter.value++;
+
+//Metodo
+const clickar =() => {
     console.log("Soy peruano");
   };
   const clickar2 =(mensaje) => {
     console.log(mensaje);
   };
 
-  const incremento = () => {
-    
-    counter.value++;
-    
-
-  };
-
   const counter = ref(0);
 
-  const decremento = () => {
-    
-    counter.value--
-    
+  const decremento = () => counter.value--;
 
-  };
-  const reinicio = () => {
-    
-    counter.value = 0
-    
+  const reinicio = () => counter.value = 0;
 
-  };
+  const turboflipa = () => {numerosTurboflipantes.value.push(counter.value);} 
+
+  const turboflipable = computed(() => {
+    if (numerosTurboflipantes.value.includes(counter.value)){
+      return true
+    }
+      else {
+      return false
+    }
+  })
+
+
+
+  const classCounter = computed(() => {
+    if(counter.value === 0) {
+      return `peruano`;
+    }
+    if(counter.value < 0) {
+      return `negative`;
+    }
+
+    if(counter.value > 0) {
+      return `positive`;
+    }
+  })
 
 
 </script>
@@ -111,5 +127,19 @@ h1{
   color: aquamarine;
   font-weight: bold;
 }
+
+.peruano{
+  color: peru;
+}
+
+
+.positive{
+  color: turquoise;
+}
+
+.negative{
+  color: red;
+}
+
 
 </style>
